@@ -44,5 +44,7 @@ resource "aws_instance" "ansysec2" {
   subnet_id     = aws_subnet.public_subnet_1.id
   security_groups = [aws_security_group.ansysec2_sg.name]
   key_name = aws_key_pair.ansys_key_pair.key_name
+  depends_on  = [aws_security_group.ansysec2_sg,aws_key_pair.ansys_key_pair]
+
 }
 
