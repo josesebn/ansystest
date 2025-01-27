@@ -1,4 +1,4 @@
-resource "aws_security_group" "ansysec2sg" {
+resource "aws_security_group" "ansyssg" {
   vpc_id = aws_vpc.ansystest_vpc.id
   depends_on = [aws_vpc.ansystest_vpc]
   ingress {
@@ -21,6 +21,9 @@ resource "aws_security_group" "ansysec2sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = {
+    Name = "ansystest_sg"
+}    
 }
 
 resource "local_file" "ssh_key" {
@@ -42,8 +45,11 @@ resource "aws_instance" "ansysec2" {
   ami           = var.ami
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public_subnet_1.id
-  security_groups = [aws_security_group.ansysec2sg.id]
+  security_groups = [aws_security_group.ansyssg.id]
   key_name = aws_key_pair.ansys_key_pair.key_name
-  depends_on  = [aws_security_group.ansysec2sg]
+  depends_on  = [aws_security_group.ansyssg]
+  tags = {
+    Name = "ansystest_ec2_nginxserver"
+}    
 }
 
