@@ -23,9 +23,19 @@ resource "aws_security_group" "ansysec2_sg" {
   }
 }
 
+resource "local_file" "ssh_key" {
+  filename = "generated_key.pub"
+  content  = tls_private_key.ssh_key.public_key_openssh
+}
+
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
 resource "aws_key_pair" "ansys_key_pair" {
   key_name   = "ansys-key-pair"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = local_file.ssh_key.content
 }
 
 resource "aws_instance" "ansysec2" {
